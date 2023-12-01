@@ -1,7 +1,7 @@
 read_student_excel <- function(f, faculty) {
   # 学生作成の Excel ファイルを1つ読む
 
-  .required_cols_st <- c("氏名", "希望順位")
+  .required_cols_st <- c("教員名", "希望順位")
 
   x <- readxl::read_excel(f, sheet = 1)
 
@@ -13,15 +13,15 @@ read_student_excel <- function(f, faculty) {
   }
 
   # 行（教員名）の確認
-  nonexistent_row <- is.na(match(faculty$氏名, x$氏名))
+  nonexistent_row <- is.na(match(faculty$教員名, x$教員名))
   if (any(nonexistent_row)) {
     stop(basename(f), ") 教員名が不足しています: ",
-         paste(faculty$氏名[nonexistent_row], collapse = ", "))
+         paste(faculty$教員名[nonexistent_row], collapse = ", "))
   }
 
   x$希望順位[is.na(x$希望順位)] <- 100
   y <- jitter(100 - x$希望順位, amount = 0.01)
-  names(y) <- faculty$ID[match(x$氏名, faculty$氏名)]
+  names(y) <- faculty$ID[match(x$教員名, faculty$教員名)]
 
   # 統一された順序に整列する
   y[faculty$ID]
