@@ -12,11 +12,15 @@ LazyData: true
 Imports: 
     matchingR,
     readxl,
-    tibble
-RoxygenNote: 7.2.3
-Suggests: 
+    tibble,
     config,
     dplyr,
     here,
     stringr,
-    tidyr
+    tidyr,
+    juicedown
+RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

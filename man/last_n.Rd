@@ -13,7 +13,7 @@ last_n(s, n)
 }
 \value{
 character vector. The elements of the result vector are last n letters
- of input vector s.
+of input vector s.
 }
 \description{
 Last n letters

@@ -1,7 +1,7 @@
 read_student_excel <- function(f, faculty) {
   # 学生作成の Excel ファイルを1つ読む
 
-  .required_cols_st <- c("教員名", "希望順位")
+  .required_cols_st <- c(the$student$name, the$student$rank)
 
   x <- readxl::read_excel(f, sheet = 1)
 
@@ -13,30 +13,34 @@ read_student_excel <- function(f, faculty) {
   }
 
   # 行（教員名）の確認
-  nonexistent_row <- is.na(match(faculty$教員名, x$教員名))
+  f_prof_name <- faculty |> dplyr::pull(the$admin_fc$name)
+  x_prof_name <- x |> dplyr::pull(the$student$name)
+
+  nonexistent_row <- is.na(match(f_prof_name, x_prof_name))
   if (any(nonexistent_row)) {
     stop(basename(f), ") 教員名が不足しています: ",
-         paste(faculty$教員名[nonexistent_row], collapse = ", "))
+         paste(faculty[nonexistent_row, the$admin_fc$name], collapse = ", "))
   }
 
-  x$希望順位[is.na(x$希望順位)] <- 100
-  y <- jitter(100 - x$希望順位, amount = 0.01)
-  names(y) <- faculty$ID[match(x$教員名, faculty$教員名)]
+  replacement <- list()
+  replacement[[the$student$rank]] <- 100
+  x <- x |> tidyr::replace_na(replacement)
+  y <- jitter(100 - x |> dplyr::pull(the$student$rank), amount = 0.01)
+  names(y) <- faculty[match(x_prof_name, f_prof_name), the$admin_fc$id, drop = TRUE]
 
   # 統一された順序に整列する
-  y[faculty$ID]
+  y[faculty |> dplyr::pull(the$admin_fc$id)]
 }
 
 
 read_professor_excel <- function(f, students) {
   # 教員作成の Excel ファイルを1つ読む
 
-  .required_cols_fc <- c("ID", "評価")
+  .required_cols_fc <- c(the$faculty$id, the$faculty$eval)
+  param <- readxl::read_excel(f, sheet = the$faculty$sh_opt, range = the$faculty$sh_opt_range)
+  use_gpa <- param[1, the$faculty$sh_opt_col, drop = TRUE]
 
-  param <- readxl::read_excel(f, sheet = "設定", range = "B2:C3")
-  use_gpa <- param$チェック[[1]]
-
-  x <- readxl::read_excel(f, sheet = "評価")
+  x <- readxl::read_excel(f, sheet = the$faculty$sh_eval)
 
   # 必須列の確認
   nonexistent_col <- is.na(match(.required_cols_fc, names(x)))
@@ -46,22 +50,26 @@ read_professor_excel <- function(f, students) {
   }
 
   # 行（学生）の確認
-  nonexistent_row <- is.na(match(students$ID, x$ID))
+  nonexistent_row <-
+    is.na(match(students |> dplyr::pull(the$admin_st$id),
+                x |> dplyr::pull(the$faculty$id)))
+
   if (any(nonexistent_row)) {
     stop(basename(f), ") 行がありません: ",
-         paste(students$ID[nonexistent_row], sep = ", "))
+         paste(students[nonexistent_row, the$admin_st$id], sep = ", "))
   }
 
   if (use_gpa) {
-    x <- merge(x, students[, c("ID", "GPA")], by = "ID")
-    x$評価 <- x$評価 + x$GPA
+    x <- merge(x, students[, c(the$admin_st$id, the$admin_st$gpa)],
+               by.x = the$faculty$id, by.y = the$admin_st$id)
+    x[, the$faculty$eval] <- x[, the$faculty$eval] + x[, the$admin_st$gpa]
   }
 
-  y <- jitter(x$評価, amount = 0.005)
-  names(y) <- x$ID
+  y <- jitter(x |> dplyr::pull(the$faculty$eval), amount = 0.005)
+  names(y) <- x |> dplyr::pull(the$faculty$id)
 
   # 統一された順序に整列する
-  y[students$ID]
+  y[students |> dplyr::pull(the$admin_st$id)]
 }
 
 
@@ -100,7 +108,7 @@ matching_utils <- function(
   }
 
   Student <- do.call(cbind, student_data)
-  Student <- Student[faculty_list$ID, ]
+  Student <- Student[faculty_list |> dplyr::pull(the$admin_fc$id), ]
 
 
   faculty_data <- list()
@@ -111,13 +119,23 @@ matching_utils <- function(
   }
 
   Faculty <- do.call(cbind, faculty_data)
-  Faculty <- Faculty[colnames(Student), faculty_list$ID]
+  Faculty <- Faculty[colnames(Student), faculty_list |> dplyr::pull(the$admin_fc$id)]
 
   list(Student = Student, Faculty = Faculty)
 }
 
 
 
+#' マッチングを計算する
+#'
+#' `matchingR::galeShapley.collegeAdmissions()` を使って学生最適なマッチングを計算する。
+#'
+#' @param util list. [matching_utils()] の結果
+#' @param slots integer vector. 各ゼミの定員
+#'
+#' @return マッチングの結果。列 (`Student`, `Seminar`) を持つ tibble.
+#' @export
+#'
 matching_compute <- function(util, slots) {
 
   result <- matchingR::galeShapley.collegeAdmissions(
@@ -135,3 +153,7 @@ matching_compute <- function(util, slots) {
   result
 }
 
+
+matching_stat <- function(util, result) {
+
+}
