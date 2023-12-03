@@ -1,7 +1,7 @@
 Package: omueconMatch
 Type: Package
 Title: Matching Students for Classes Using DA Algorithm
-Version: 0.1.0.9000
+Version: 0.1.0.9001
 Authors@R: 
     person("Kenji", "Sato", , "kenji@kenjisato.jp", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0009-0000-4520-2560"))
@@ -18,7 +18,8 @@ Imports:
     here,
     stringr,
     tidyr,
-    juicedown
+    juicedown,
+    whisker
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Suggests: 

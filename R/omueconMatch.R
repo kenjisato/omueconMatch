@@ -8,4 +8,5 @@ ignore_unused_imports <- function() {
   stringr::boundary
   tidyr::all_of
   juicedown::anki
+  whisker::whisker.escape
 }
