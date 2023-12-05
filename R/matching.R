@@ -23,6 +23,11 @@ read_student_excel <- function(f, faculty) {
          paste(faculty[nonexistent_row, the$admin_fc$name], collapse = ", "))
   }
 
+  if ("logical" == x |> pull(the$student$rank) |> typeof()) {
+    x <- x |>
+      mutate((!!the$student$rank) := NA_integer_)
+  }
+
   replacement <- list()
   replacement[[the$student$rank]] <- 100
   x <- x |> tidyr::replace_na(replacement)

@@ -20,7 +20,8 @@ Imports:
     tidyr,
     juicedown,
     whisker,
-    ggplot2
+    ggplot2,
+    readr
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Suggests: 

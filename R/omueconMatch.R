@@ -10,4 +10,5 @@ ignore_unused_imports <- function() {
   juicedown::anki
   whisker::whisker.escape
   ggplot2::aes
+  readr::read_csv
 }

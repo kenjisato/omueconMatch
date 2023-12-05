@@ -42,8 +42,17 @@ test_that("student file error", {
 
   # 4: faculty に入っていない「教員D」がある → OK
   student4 <- pkg_file("error/Students/STIDok4.xlsx")
-  expect_silent(read_student_excel(student4, faculty))
+  expect_message(read_student_excel(student4, faculty),
+                 paste("Processing", basename(student4)))
 })
 
 
+test_that("read empty file", {
+  faculty <- readxl::read_xlsx(pkg_file("samples/Data4Test1/Admin/faculty.xlsx"))
+
+  # 希望順位をまったく入力せずに提出された（希望順位の列が logical 型になる）
+  student_empty <- pkg_file("error/Students/STIDok5.xlsx")
+  expect_message(read_student_excel(student_empty, faculty),
+                 regexp = paste("Processing", basename(student_empty)))
+})
 
