@@ -9,4 +9,5 @@ ignore_unused_imports <- function() {
   tidyr::all_of
   juicedown::anki
   whisker::whisker.escape
+  ggplot2::aes
 }

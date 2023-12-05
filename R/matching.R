@@ -1,5 +1,6 @@
 read_student_excel <- function(f, faculty) {
   # 学生作成の Excel ファイルを1つ読む
+  message("Processing ", basename(f))
 
   .required_cols_st <- c(the$student$name, the$student$rank)
 
@@ -35,6 +36,7 @@ read_student_excel <- function(f, faculty) {
 
 read_professor_excel <- function(f, students) {
   # 教員作成の Excel ファイルを1つ読む
+  message("Processing ", basename(f))
 
   .required_cols_fc <- c(the$faculty$id, the$faculty$eval)
   param <- readxl::read_excel(f, sheet = the$faculty$sh_opt, range = the$faculty$sh_opt_range)

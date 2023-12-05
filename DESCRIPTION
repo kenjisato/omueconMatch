@@ -19,7 +19,8 @@ Imports:
     stringr,
     tidyr,
     juicedown,
-    whisker
+    whisker,
+    ggplot2
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Suggests: 
