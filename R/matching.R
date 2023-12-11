@@ -23,9 +23,9 @@ read_student_excel <- function(f, faculty) {
          paste(faculty[nonexistent_row, the$admin_fc$name], collapse = ", "))
   }
 
-  if ("logical" == x |> pull(the$student$rank) |> typeof()) {
+  if ("logical" == x |> dplyr::pull(the$student$rank) |> typeof()) {
     x <- x |>
-      mutate((!!the$student$rank) := NA_integer_)
+      dplyr::mutate((!!the$student$rank) := NA_integer_)
   }
 
   replacement <- list()

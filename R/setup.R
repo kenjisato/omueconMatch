@@ -9,11 +9,11 @@
 #' @export
 #'
 setup_excel_names <- function(
-    student = list(name = "教員名", rank = "希望順位"),
-    faculty = list(id = "ID", eval = "評価", sh_opt = "設定", sh_eval = "評価",
-                   sh_opt_col = "チェック", sh_opt_range = "B2:C3"),
-    admin_fc = list(id = "ID", name = "教員名"),
-    admin_st = list(id = "ID", name = "氏名", gpa = "GPA")
+    student = list(name = "\u6559\u54e1\u540d", rank = "\u5e0c\u671b\u9806\u4f4d"),
+    faculty = list(id = "ID", eval = "\u8a55\u4fa1", sh_opt = "\u8a2d\u5b9a", sh_eval = "\u8a55\u4fa1",
+                   sh_opt_col = "\u30c1\u30a7\u30c3\u30af", sh_opt_range = "B2:C3"),
+    admin_fc = list(id = "ID", name = "\u6559\u54e1\u540d"),
+    admin_st = list(id = "ID", name = "\u6c0f\u540d", gpa = "GPA")
 ) {
   the$student <- student
   the$faculty <- faculty
